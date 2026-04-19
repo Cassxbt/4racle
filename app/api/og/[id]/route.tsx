@@ -104,7 +104,7 @@ export async function GET(
           </div>
 
           <div style={{ color: '#aaa', fontSize: 15, fontStyle: 'italic' }}>
-            "{result.cardCopy}"
+            &quot;{result.cardCopy}&quot;
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 4 }}>

@@ -55,7 +55,7 @@ export default function ScoreCard({ result, scoreId }: Props) {
             <span className={`text-lg font-black uppercase tracking-wide ${archetypeColor}`}>
               ✦ {result.archetype} ✦
             </span>
-            <p className="text-[var(--muted)] text-sm italic">"{result.cardCopy}"</p>
+            <p className="text-[var(--muted)] text-sm italic">&quot;{result.cardCopy}&quot;</p>
           </div>
         </div>
 

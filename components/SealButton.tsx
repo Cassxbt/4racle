@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-export default function SealButton({ result, scoreId: _scoreId }: Props) {
+export default function SealButton({ result }: Props) {
   const [state, setState] = useState<'idle' | 'connecting' | 'pending' | 'done' | 'error'>('idle');
   const [txHash, setTxHash] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
