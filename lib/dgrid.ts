@@ -7,7 +7,7 @@ export interface DGridScoreResponse {
   reasoning: string;
 }
 
-const DGRID_BASE = 'https://api.dgrid.tech/v1';
+const DGRID_BASE = 'https://api.dgrid.ai/v1';
 
 const SYSTEM_PROMPT = `You are 4racle, a pre-launch meme coin intelligence oracle on BNB Chain. Given structured live signal data about a meme concept, return a JSON scoring object.
 
