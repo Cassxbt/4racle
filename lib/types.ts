@@ -29,6 +29,39 @@ export interface SignalData {
     graduatingNarratives: string[];
     alignment: number;
   };
+  twitter: {
+    score: number;
+    mentions: number;
+    sentiment: 'bullish' | 'neutral' | 'bearish';
+    label: string;
+  };
+}
+
+export type SignalHealth = 'ok' | 'degraded' | 'unavailable';
+
+export interface SignalCoverage {
+  status: 'full' | 'partial';
+  healthyCount: number;
+  degradedCount: number;
+  unavailableCount: number;
+}
+
+export interface PublicSignalSummary {
+  socialTrending: boolean;
+  saturationLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+  timingLabel: 'OPTIMAL' | 'LATE' | 'EARLY' | 'MISS';
+  ctBuzz: string;
+}
+
+export interface SignalEvidenceItem {
+  key: 'googleTrends' | 'socialSignal' | 'twitter' | 'redditBuzz' | 'saturation' | 'dexscreener';
+  label: string;
+  health: SignalHealth;
+  metric: string;
+  detail: string;
+  chips?: string[];
+  trend?: 'rising' | 'stable' | 'falling';
+  value?: number;
 }
 
 export type Archetype =
@@ -39,6 +72,8 @@ export type Archetype =
   | 'Exit Liquidity Material'
   | 'Dead on Arrival';
 
+export type LaunchDecision = 'Launch' | 'Watch' | 'Do Not Launch Yet';
+
 export interface DimensionScores {
   memeEnergy: number;
   narrativeAlpha: number;
@@ -47,22 +82,20 @@ export interface DimensionScores {
   wagmiFactor: number;
 }
 
-export interface ScoreResult {
-  id: string;
-  concept: ConceptInput;
+export interface PublicSharePayload {
+  v: 1;
+  issuedAt: number;
+  conceptName: string;
   total: number;
+  decision: LaunchDecision;
+  reasons: string[];
   dimensions: DimensionScores;
   archetype: Archetype;
   character: string;
   characterFile: string;
   cardCopy: string;
   oracleVerdict: string;
-  signals: {
-    socialTrending: boolean;
-    saturationLevel: 'LOW' | 'MEDIUM' | 'HIGH';
-    timingLabel: 'OPTIMAL' | 'LATE' | 'EARLY' | 'MISS';
-  };
-  sealId?: number;
-  sealTx?: string;
-  createdAt: number;
+  signals: PublicSignalSummary;
+  coverage: SignalCoverage;
+  evidence: SignalEvidenceItem[];
 }

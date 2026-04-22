@@ -1,22 +1,23 @@
-import { ScoreResult } from './types';
+import { signPublicSharePayload, verifyPublicShareToken } from './share-token';
+import type { PublicSharePayload } from './types';
 
-export function encodeScore(result: ScoreResult): string {
-  const payload = {
-    ...result,
-    concept: {
-      ...result.concept,
-      description: result.concept.description.slice(0, 120),
-    },
-  };
-  return Buffer.from(JSON.stringify(payload)).toString('base64url');
+export function encodeScore(payload: PublicSharePayload): string {
+  return signPublicSharePayload(payload, getShareTokenSecret());
 }
 
-export function decodeScore(encoded: string): ScoreResult | null {
-  try {
-    if (!encoded) return null;
-    const json = Buffer.from(encoded, 'base64url').toString('utf8');
-    return JSON.parse(json) as ScoreResult;
-  } catch {
-    return null;
+export function decodeScore(encoded: string): PublicSharePayload | null {
+  return verifyPublicShareToken(encoded, getShareTokenSecret());
+}
+
+function getShareTokenSecret(): string {
+  const secret = process.env.SHARE_TOKEN_SECRET;
+  if (secret) {
+    return secret;
   }
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('SHARE_TOKEN_SECRET is required in production');
+  }
+
+  return 'dev-share-token-secret';
 }

@@ -34,19 +34,19 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const result = decodeScore(params.id);
-  if (!result) return new Response('Not found', { status: 404 });
+  const payload = decodeScore(params.id);
+  if (!payload) return new Response('Not found', { status: 404 });
 
-  const charSrc = loadCharacter(result.characterFile);
-  const bg = ARCHETYPE_BG[result.archetype] ?? '#0d0d0d';
-  const accent = ARCHETYPE_ACCENT[result.archetype] ?? '#9b4dff';
+  const charSrc = loadCharacter(payload.characterFile);
+  const bg = ARCHETYPE_BG[payload.archetype] ?? '#0d0d0d';
+  const accent = ARCHETYPE_ACCENT[payload.archetype] ?? '#9b4dff';
 
   const dims = [
-    { label: 'Meme Energy', value: result.dimensions.memeEnergy },
-    { label: 'Narrative Alpha', value: result.dimensions.narrativeAlpha },
-    { label: 'DexGod Timing', value: result.dimensions.dexgodTiming },
-    { label: 'CT Potential', value: result.dimensions.ctPotential },
-    { label: 'Wagmi Factor', value: result.dimensions.wagmiFactor },
+    { label: 'Meme Energy', value: payload.dimensions.memeEnergy },
+    { label: 'Narrative Alpha', value: payload.dimensions.narrativeAlpha },
+    { label: 'DexGod Timing', value: payload.dimensions.dexgodTiming },
+    { label: 'CT Potential', value: payload.dimensions.ctPotential },
+    { label: 'Wagmi Factor', value: payload.dimensions.wagmiFactor },
   ];
 
   return new ImageResponse(
@@ -81,7 +81,7 @@ export async function GET(
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={charSrc} alt="" width={180} height={180} style={{ objectFit: 'contain' }} />
           <div style={{ color: accent, fontWeight: 900, fontSize: 13, textAlign: 'center', textTransform: 'uppercase', letterSpacing: 2 }}>
-            {result.character}
+            {payload.character}
           </div>
         </div>
 
@@ -90,21 +90,21 @@ export async function GET(
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <div style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', letterSpacing: 3 }}>🔮 4racle</div>
-              <div style={{ color: '#fff', fontSize: 26, fontWeight: 900 }}>{result.concept.name}</div>
+              <div style={{ color: '#fff', fontSize: 26, fontWeight: 900 }}>{payload.conceptName}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
               <div style={{ color: '#888', fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Score</div>
-              <div style={{ color: accent, fontSize: 54, fontWeight: 900, lineHeight: 1 }}>{result.total}</div>
+              <div style={{ color: accent, fontSize: 54, fontWeight: 900, lineHeight: 1 }}>{payload.total}</div>
               <div style={{ color: '#555', fontSize: 12 }}>/100</div>
             </div>
           </div>
 
           <div style={{ color: accent, fontSize: 17, fontWeight: 900, textTransform: 'uppercase', letterSpacing: 3 }}>
-            ✦ {result.archetype} ✦
+            ✦ {payload.archetype} ✦
           </div>
 
           <div style={{ color: '#aaa', fontSize: 15, fontStyle: 'italic' }}>
-            &quot;{result.cardCopy}&quot;
+            &quot;{payload.cardCopy}&quot;
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 4 }}>
@@ -121,11 +121,11 @@ export async function GET(
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flex: 1, paddingTop: 8 }}>
             <div style={{ display: 'flex', gap: 18, color: '#555', fontSize: 12 }}>
-              <span>Social: <span style={{ color: result.signals.socialTrending ? '#4ade80' : '#fff' }}>{result.signals.socialTrending ? '🔥 trending' : 'stable'}</span></span>
-              <span>Saturation: <span style={{ color: '#fff' }}>{result.signals.saturationLevel}</span></span>
-              <span>Timing: <span style={{ color: '#fff' }}>{result.signals.timingLabel}</span></span>
+              <span>Social: <span style={{ color: payload.signals.socialTrending ? '#4ade80' : '#fff' }}>{payload.signals.socialTrending ? '🔥 trending' : 'stable'}</span></span>
+              <span>Saturation: <span style={{ color: '#fff' }}>{payload.signals.saturationLevel}</span></span>
+              <span>Timing: <span style={{ color: '#fff' }}>{payload.signals.timingLabel}</span></span>
             </div>
-            <div style={{ color: '#333', fontSize: 11 }}>4racle.xyz · powered by DGrid</div>
+            <div style={{ color: '#333', fontSize: 11 }}>4racle.xyz · 6 live signals</div>
           </div>
         </div>
       </div>

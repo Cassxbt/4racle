@@ -1,10 +1,12 @@
 'use client';
-import { useState } from 'react';
-import { ScoreResult } from '@/lib/types';
+import { useEffect, useState } from 'react';
 
 interface Props {
-  result: ScoreResult;
   scoreId: string;
+}
+
+function getStoredSealKey(scoreId: string): string {
+  return `4racle:seal:${scoreId}`;
 }
 
 declare global {
@@ -15,21 +17,30 @@ declare global {
   }
 }
 
-export default function SealButton({ result }: Props) {
+export default function SealButton({ scoreId }: Props) {
   const [state, setState] = useState<'idle' | 'connecting' | 'pending' | 'done' | 'error'>('idle');
   const [txHash, setTxHash] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  if (result.sealTx || (state === 'done' && txHash)) {
-    const hash = txHash || result.sealTx!;
+  useEffect(() => {
+    const storedTxHash = window.localStorage.getItem(getStoredSealKey(scoreId));
+
+    if (storedTxHash) {
+      setTxHash(storedTxHash);
+      setState('done');
+    }
+  }, [scoreId]);
+
+  if (state === 'done' && txHash) {
+    const hash = txHash;
     return (
       <a
         href={`https://bscscan.com/tx/${hash}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full bg-[var(--surface)] border border-green-700 text-green-400 font-bold py-4 rounded-lg text-center transition-colors hover:border-green-500"
+        className="btn-secondary !border-green-700/40 !text-green-400 hover:!border-green-500/60"
       >
-        🔒 Sealed on BSC · View Proof
+        Sealed on BSC &middot; View Proof
       </a>
     );
   }
@@ -70,11 +81,7 @@ export default function SealButton({ result }: Props) {
       const res = await fetch('/api/seal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: result.concept.name,
-          description: result.concept.description,
-          score: result.total,
-        }),
+        body: JSON.stringify({ scoreId }),
       });
 
       if (!res.ok) throw new Error('Failed to build seal transaction');
@@ -87,6 +94,7 @@ export default function SealButton({ result }: Props) {
         params: [{ from: accounts[0], to, data, chainId: '0x38' }],
       })) as string;
 
+      window.localStorage.setItem(getStoredSealKey(scoreId), hash);
       setTxHash(hash);
       setState('done');
     } catch (err) {
@@ -100,11 +108,11 @@ export default function SealButton({ result }: Props) {
       <button
         onClick={handleSeal}
         disabled={state === 'connecting' || state === 'pending'}
-        className="w-full bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg text-center transition-colors"
+        className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {state === 'connecting' && 'Connecting wallet...'}
         {state === 'pending' && 'Confirm in MetaMask...'}
-        {(state === 'idle' || state === 'error') && '🔒 Seal on BSC (~$0.02)'}
+        {(state === 'idle' || state === 'error') && 'Seal on BSC (~$0.02)'}
       </button>
       {state === 'error' && errorMsg && (
         <p className="text-red-400 text-xs text-center">{errorMsg}</p>

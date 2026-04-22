@@ -40,9 +40,9 @@ export default function ScoreForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full max-w-lg">
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-[var(--muted)] uppercase tracking-wider">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--muted)]">
           Concept Name / Ticker
         </label>
         <input
@@ -50,12 +50,12 @@ export default function ScoreForm() {
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. ChillCat, RAREPEPE, SleepyDoge"
           maxLength={80}
-          className="bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-white placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+          className="form-input"
         />
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-[var(--muted)] uppercase tracking-wider">
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--muted)]">
           Theme / Description
         </label>
         <textarea
@@ -64,32 +64,42 @@ export default function ScoreForm() {
           placeholder="e.g. A chill cat that doesn't panic during market dumps. Vibes only."
           maxLength={300}
           rows={3}
-          className="bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-white placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] transition-colors resize-none"
+          className="form-input resize-none"
         />
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-[var(--muted)] uppercase tracking-wider">
-          Target Community{' '}
-          <span className="text-[var(--muted)] normal-case font-normal">(optional)</span>
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--muted)]">
+          Target Community
+          <span className="normal-case font-normal ml-1 tracking-normal">(optional)</span>
         </label>
         <input
           value={community}
           onChange={(e) => setCommunity(e.target.value)}
           placeholder="e.g. BSC degens, doge army, CT"
           maxLength={80}
-          className="bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-white placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+          className="form-input"
         />
       </div>
 
-      {error && <p className="text-red-400 text-sm">{error}</p>}
+      {error && (
+        <div className="text-red-400 text-sm bg-red-400/5 border border-red-400/20 rounded-xl px-4 py-3">
+          {error}
+        </div>
+      )}
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-[var(--accent)] hover:bg-[var(--accent-dim)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg text-lg transition-colors"
-      >
-        {loading ? 'Reading the oracle...' : 'Check My Meme 🔮'}
+      <button type="submit" disabled={loading} className="btn-oracle mt-1">
+        {loading ? (
+          <span className="flex items-center justify-center gap-3">
+            <span className="oracle-orb !w-5 !h-5 !shadow-none" style={{ animation: 'orbPulse 1s ease-in-out infinite' }} />
+            Consulting the oracle
+            <span className="loading-dots">
+              <span>.</span><span>.</span><span>.</span>
+            </span>
+          </span>
+        ) : (
+          'Consult the Oracle'
+        )}
       </button>
     </form>
   );

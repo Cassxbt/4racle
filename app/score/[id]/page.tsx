@@ -8,43 +8,48 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const result = decodeScore(params.id);
-  if (!result) return { title: '4racle' };
+  const payload = decodeScore(params.id);
+  if (!payload) return { title: '4racle' };
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://4racle.xyz';
 
   return {
-    title: `${result.concept.name} scored ${result.total}/100 on 4racle`,
-    description: `${result.archetype} — ${result.cardCopy}`,
+    title: `${payload.conceptName} scored ${payload.total}/100 on 4racle`,
+    description: `${payload.archetype} \u2014 ${payload.cardCopy}`,
     openGraph: {
-      title: `${result.concept.name} — ${result.total}/100 on 4racle`,
-      description: result.cardCopy,
+      title: `${payload.conceptName} \u2014 ${payload.total}/100 on 4racle`,
+      description: payload.cardCopy,
       images: [`${appUrl}/api/og/${params.id}`],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${result.concept.name} — ${result.total}/100 on 4racle`,
-      description: result.cardCopy,
+      title: `${payload.conceptName} \u2014 ${payload.total}/100 on 4racle`,
+      description: payload.cardCopy,
       images: [`${appUrl}/api/og/${params.id}`],
     },
   };
 }
 
 export default function ScorePage({ params }: Props) {
-  const result = decodeScore(params.id);
-  if (!result) notFound();
+  const payload = decodeScore(params.id);
+  if (!payload) notFound();
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-start px-4 py-12 gap-8">
-      <a href="/" className="text-[var(--muted)] hover:text-white text-sm transition-colors self-start">
-        ← Check another concept
+    <main className="min-h-screen flex flex-col items-center px-4 py-12 gap-8">
+      <a
+        href="/"
+        className="text-[var(--muted)] hover:text-white text-sm transition-colors self-start max-w-lg w-full mx-auto anim-fade-in"
+      >
+        &larr; Check another concept
       </a>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <span className="text-3xl">🔮</span>
-        <h1 className="text-2xl font-black">4racle Result</h1>
+      <div className="flex flex-col items-center gap-4 text-center anim-fade-up">
+        <div className="oracle-orb !w-16 !h-16" />
+        <h1 className="text-2xl font-black">
+          <span className="gradient-text">Oracle Verdict</span>
+        </h1>
       </div>
-      <ScoreCard result={result} scoreId={params.id} />
+      <ScoreCard result={payload} scoreId={params.id} />
     </main>
   );
 }
